@@ -190,7 +190,9 @@ with tab_chat:
             st.error("⚠️ **Groq API Key Required**: Please open the sidebar (👈) and enter your Groq API Key.")
             st.stop()
         if not cfg.is_sfcc_configured():
-            st.error("⚠️ **SFCC Configuration Required**: Please open the sidebar (👈) and enter your SFCC Basic Auth and Tenant details.")
+            missing = cfg.get_missing_sfcc_fields()
+            missing_str = f" ({', '.join(missing)})" if missing else ""
+            st.error(f"⚠️ **SFCC Configuration Required**: Please open the sidebar (👈) and enter your missing SFCC credentials{missing_str}.")
             st.stop()
 
         # Append user message
