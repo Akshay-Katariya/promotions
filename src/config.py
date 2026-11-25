@@ -6,10 +6,12 @@ Loads settings from environment variables and .env file.
 import os
 from dataclasses import dataclass
 from typing import Optional
-from dotenv import load_dotenv
 
-# Load .env file
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 
 @dataclass
@@ -83,24 +85,21 @@ def get_session_settings() -> Settings:
     Falls back to environment settings for CLI/testing.
     """
     try:
-        from streamlit.runtime.scriptrunner import get_script_run_ctx
-        ctx = get_script_run_ctx()
-        if ctx is not None:
-            import streamlit as st
-            if "groq_api_key" in st.session_state:
-                return Settings(
-                    groq_api_key=st.session_state.get("groq_api_key", ""),
-                    groq_model=st.session_state.get("groq_model", "openai/gpt-oss-120b"),
-                    sfcc_basic_auth=st.session_state.get("sfcc_basic_auth", ""),
-                    sfcc_short_code=st.session_state.get("sfcc_short_code", ""),
-                    sfcc_org_id=st.session_state.get("sfcc_org_id", ""),
-                    sfcc_site_id=st.session_state.get("sfcc_site_id", ""),
-                    sfcc_token_url=st.session_state.get(
-                        "sfcc_token_url",
-                        "https://account.demandware.com/dwsso/oauth2/access_token",
-                    ),
-                    sfcc_base_url=st.session_state.get("sfcc_base_url", None),
-                )
+        import streamlit as st
+        if hasattr(st, "session_state") and "groq_api_key" in st.session_state:
+            return Settings(
+                groq_api_key=st.session_state.get("groq_api_key", ""),
+                groq_model=st.session_state.get("groq_model", "openai/gpt-oss-120b"),
+                sfcc_basic_auth=st.session_state.get("sfcc_basic_auth", ""),
+                sfcc_short_code=st.session_state.get("sfcc_short_code", ""),
+                sfcc_org_id=st.session_state.get("sfcc_org_id", ""),
+                sfcc_site_id=st.session_state.get("sfcc_site_id", ""),
+                sfcc_token_url=st.session_state.get(
+                    "sfcc_token_url",
+                    "https://account.demandware.com/dwsso/oauth2/access_token",
+                ),
+                sfcc_base_url=st.session_state.get("sfcc_base_url", None),
+            )
     except Exception:
         pass
     return settings

@@ -14,12 +14,9 @@ _client: Optional[SFCCPromotionsClient] = None
 
 def get_client() -> SFCCPromotionsClient:
     try:
-        from streamlit.runtime.scriptrunner import get_script_run_ctx
-        ctx = get_script_run_ctx()
-        if ctx is not None:
-            import streamlit as st
-            if "sfcc_client" in st.session_state:
-                return st.session_state["sfcc_client"]
+        import streamlit as st
+        if hasattr(st, "session_state") and "sfcc_client" in st.session_state:
+            return st.session_state["sfcc_client"]
     except Exception:
         pass
     global _client

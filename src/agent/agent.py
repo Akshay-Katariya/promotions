@@ -2,7 +2,7 @@
 Agent orchestrator integrating LangChain, Groq LLM, and SFCC Promotion Tools.
 """
 
-from typing import List, Dict, Any, Generator, Tuple
+from typing import List, Dict, Any, Generator, Tuple, Optional
 from langchain.agents import create_agent
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, AIMessage, BaseMessage
